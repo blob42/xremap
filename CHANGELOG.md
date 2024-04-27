@@ -1,3 +1,20 @@
+## v0.8.18
+
+- Fix issues in the release pipeline
+
+## v0.8.17
+
+- Add `window` matcher for the `kde` client [#448](https://github.com/xremap/xremap/pull/448)
+
+## v0.8.16
+
+- Add `window` matcher for the `wlroots` client [#447](https://github.com/k0kubun/xremap/issues/447)
+- Handle new KWin API for the `kde` client [#437](https://github.com/k0kubun/xremap/issues/437)
+
+## v0.8.15
+
+- Add `skip_key_event` option to `press`/`release` modmap action [#420](https://github.com/k0kubun/xremap/issues/420)
+
 ## v0.8.14
 
 - Support TOML as a config file format [#404](https://github.com/k0kubun/xremap/issues/404)

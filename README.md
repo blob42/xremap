@@ -201,12 +201,17 @@ modmap:
         alone_timeout_millis: 1000 # Optional
       # Hook `keymap` action on key press/release events.
       KEY_XXX:
+        skip_key_event: false # Optional, skip original key event ,defaults to false
         press: { launch: ["xdotool", "mousemove", "0", "7200"] } # Required
         release: { launch: ["xdotool", "mousemove", "0", "0"] } # Required
     application: # Optional
       not: [Application, ...]
       # or
       only: [Application, ...]
+    window: # Optional (only wlroots/kde clients supported)
+      not: [/regex of window title/, ...]
+      # or
+      only: [/regex of window title/, ...]
     device: # Optional
       not: [Device, ...]
       # or
@@ -216,6 +221,14 @@ modmap:
 For `KEY_XXX` and `KEY_YYY`, use [these names](https://github.com/emberian/evdev/blob/1d020f11b283b0648427a2844b6b980f1a268221/src/scancodes.rs#L26-L572).
 You can skip `KEY_` and the name is case-insensitive. So `KEY_CAPSLOCK`, `CAPSLOCK`, and `CapsLock` are the same thing.
 Some [custom aliases](src/config/key.rs) like `SHIFT_R`, `CONTROL_L`, etc. are provided.
+
+In case you don't know the name of a key, you can find out by enabling the xremap debug output:
+```bash
+RUST_LOG=debug xremap config.yml
+# or
+sudo RUST_LOG=debug xremap config.yml
+```
+Then press the key you want to know the name of.
 
 If you specify a map containing `held` and `alone`, you can use the key for two purposes.
 The key is considered `alone` if it's pressed and released within `alone_timeout_millis` (default: 1000)
@@ -249,10 +262,19 @@ keymap:
       MOD1-KEY_XXX: { escape_next_key: true }
       # Set mode to configure Vim-like modal remapping
       MOD1-KEY_XXX: { set_mode: default }
+      # Set mode and launch command at same time
+      MOD1-KEY_XXX:
+        set_mode: test
+        launch: ["notify-send", "test mode"]
+
     application: # Optional
       not: [Application, ...]
       # or
       only: [Application, ...]
+    window: # Optional (only wlroots/kde clients supported)
+      not: [/regex of window title/, ...]
+      # or
+      only: [/regex of window title/, ...]
     device: # Optional
       not: [Device, ...]
       # or
@@ -327,7 +349,7 @@ However, it will only start printing, once a mapping has been triggered that use
 So you have to create a mapping with a filter using a dummy application name and trigger it.
 Then each time you switch to a new window xremap will print its caption, class, and name in the following style:
 `active window: caption: '<caption>', class: '<class>', name: '<name>'`
-You want to use the class for the filter.  
+The `class` property should be used for application matching, while the `caption` property should be used for window matching.
 
 If you use a systemd-daemon to manage xremap, the prints will be visible in the system-logs (Can be opened with `journalctl -f`)
 
